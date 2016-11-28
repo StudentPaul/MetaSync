@@ -143,11 +143,14 @@ metasync.DataCollectorTimeout = function(expected, done, timeout) {
 metasync.DataCollectorTimeout.prototype.collect = function(key, data) {
   this.count++;
   this.data[key] = data;
-  if (this.expected === this.count && !this.timedOut) {
-    this.done(null,this.data);
-  } else {
-    this.done(true);
+  if(this.expected === this.count){
+    if (!this.timedOut) {
+      this.done(null,this.data);
+    } else {
+      this.done(true);
+    }
   }
+
 };
 
 // Asynchrous filter (iterate parallel)
