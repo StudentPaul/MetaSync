@@ -127,8 +127,9 @@ metasync.DataCollector.prototype.collect = function(key, data) {
 //   timeout - timeout for callback execution
 metasync.DataCollectorTimeout = function(expected, done, timeout) {
   this.timedOut = false;
+  var that = this;
   setTimeout(function () {
-    this.timedOut = true;
+    that.timedOut = true;
   },timeout);
   this.expected = expected;
   this.data = {};
