@@ -121,6 +121,35 @@ metasync.DataCollector.prototype.collect = function(key, data) {
   if (this.expected === this.count) this.done(this.data);
 };
 
+// Data Collector
+//   expected - number of `collect()` calls expected
+//   done - on `done` callback(data)
+//   timeout - timeout for callback execution
+metasync.DataCollectorTimeout = function(expected, done, timeout) {
+  this.timedOut = false;
+  setTimeout(function () {
+    this.timedOut = true;
+  },timeout);
+  this.expected = expected;
+  this.data = {};
+  this.count = 0;
+  this.done = done;
+};
+
+// Push data to collector
+//   key - key in result data
+//   data - value in result data
+//
+metasync.DataCollectorTimeout.prototype.collect = function(key, data) {
+  this.count++;
+  this.data[key] = data;
+  if (this.expected === this.count && !this.timedOut) {
+    this.done(null,this.data);
+  } else {
+    this.done(true);
+  }
+};
+
 // Asynchrous filter (iterate parallel)
 // filter :: [a] -> (a -> (Boolean -> Void) -> Void) -> ([a] -> Void)
 //
