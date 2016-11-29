@@ -128,7 +128,7 @@ metasync.DataCollector.prototype.collect = function(key, data) {
 metasync.DataCollectorTimeout = function(expected, done, timeout) {
   this.timedOut = false;
   var that = this;
-  setTimeout(function () {
+  this.timeout = setTimeout(function () {
     that.timedOut = true;
   },timeout);
   this.expected = expected;
@@ -146,9 +146,10 @@ metasync.DataCollectorTimeout.prototype.collect = function(key, data) {
   this.data[key] = data;
   if(this.expected === this.count){
     if (!this.timedOut) {
+      clearTimeout(this.timeout);
       this.done(null,this.data);
     } else {
-      this.done(true);
+      this.done(new Error('Timed out'));
     }
   }
 
